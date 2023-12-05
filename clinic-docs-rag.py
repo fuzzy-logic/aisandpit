@@ -57,13 +57,9 @@ for page in pages:
 print("data sourced from following web pages: ", pages)
 
 
-
-
-
-
 # Prompt
 prompt = PromptTemplate.from_template(
-    "Find people in the folllwing documents: {docs}"
+    "Find people's names in the folllowing documents: {docs}"
 )
 
 # Chain
