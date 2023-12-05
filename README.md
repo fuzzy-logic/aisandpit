@@ -27,7 +27,9 @@ Langchain: https://python.langchain.com/docs/integrations/llms/ollama
 
 
 ##### LLM + RAG 
-Curently solving the problems using LLM + RAG (https://research.ibm.com/blog/retrieval-augmented-generation-RAG) 
+Curently solving the problems using LLM + RAG
+@see https://research.ibm.com/blog/retrieval-augmented-generation-RAG
+@see https://www.youtube.com/watch?v=TRjq7t2Ms5I
 
 The initial web scrape exmaples load a web page, split it up in to 1000(ish) token chucks, loads in to a vectorbase, and then 
 puts the vectodb docs in the prompt template, which in not ideal and has token length limitations. It works ok for the current problems
