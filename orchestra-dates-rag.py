@@ -11,6 +11,9 @@ from langchain.llms import LlamaCpp
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain import hub
+from langchain.chains import RetrievalQA
+
 
 # @see https://python.langchain.com/docs/integrations/llms/ollama
 # setup:
@@ -37,7 +40,9 @@ callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 # this uses the local llm web server apis once you have it running via ollma: https://ollama.ai/
 llm = Ollama(
-   model="llama2", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()])
+    model="llama2",
+    verbose=True,
+    callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
 )
 
 # VECTORDB WEB DATA
@@ -53,21 +58,30 @@ for page in pages:
 print("data sourced from following web pages: ", pages)
 
 
-# Prompt
+# Prompt (this matters, not sure why, it's the initial "setup" orienting prompt)
 prompt = PromptTemplate.from_template(
-    "fetch performance event details including name of orchestra, date, time, lcoation, prices in the docs: {docs}"
+    "summarise information in the docs: {docs}"
 )
 
+QA_CHAIN_PROMPT = hub.pull("rlm/rag-prompt-llama")
+
+qa_chain = RetrievalQA.from_chain_type(
+    llm,
+    retriever=vectorstore.as_retriever(),
+    chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
+)
+
+
 # Chain
-llm_chain = LLMChain(llm=llm, prompt=prompt)
 
-# Run
-question = "Provide the correct date, time, prices, location and name of the performance event in valid json schema format?"
-docs = vectorstore.similarity_search(question)
-result = llm_chain(docs)
 
-# Output
-result["text"]
+
+# Run: this prompt is the instruction:
+question = "What are the performance event details?"
+qa_chain({"query": question})
+
+
+
 
 
 
