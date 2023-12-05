@@ -34,6 +34,7 @@ callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 #     verbose=True,
 # )
 
+# this uses the local llm web server apis once you have it running via ollma: https://ollama.ai/
 llm = Ollama(
    model="llama2", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()])
 )
