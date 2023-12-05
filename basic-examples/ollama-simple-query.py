@@ -11,7 +11,7 @@ from langchain.embeddings import OllamaEmbeddings
 
 
 llm = Ollama(
-   model="llama2", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()])
+   model="llama2:13b", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()])
 )
 llm("Tell me about the history of Napoleon")
 

@@ -3,7 +3,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms import Ollama
 from langchain.embeddings import OllamaEmbeddings
 from langchain.document_loaders import WebBaseLoader
-from langchain.embeddings import GPT4AllEmbeddings
+from langchain.embeddings import GPT4AllEmbeddings, OllamaEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
@@ -15,7 +15,12 @@ from langchain import hub
 from langchain.chains import RetrievalQA
 
 
+
+# Example of finding concert date/time/location in a given web page
+# using a LLM specific Q/A chain @see  https://smith.langchain.com/hub/rlm/rag-prompt-llama 
+# Typically more of a chatbot conversation 
 # @see https://python.langchain.com/docs/integrations/llms/ollama
+
 # setup:
 # ./ollama serve
 # ./ollama run llama2
@@ -28,44 +33,38 @@ callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 # this uses the local llm web server apis once you have it running via ollma: https://ollama.ai/
 llm = Ollama(
-    model="llama2",
-    verbose=True,
+    model="llama2:13b",
+    verbose=False,
     callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
 )
 
-# VECTORDB WEB DATA
+# VECTORDB-IZE WEB DATA
 pages = ["https://www.rpo.co.uk/whats-on/eventdetail/1982/82/john-rutters-christmas-celebration-matinee"];
-
-
+print("data sourced from following web pages: ", pages)
+all_splits = [];
 for page in pages: 
     loader = WebBaseLoader(page)
     data = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=50)
-    all_splits = text_splitter.split_documents(data)
-    vectorstore = Chroma.from_documents(documents=all_splits, embedding=GPT4AllEmbeddings())
-print("data sourced from following web pages: ", pages)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
+    all_splits  = [*all_splits, *text_splitter.split_documents(data)];
+vectorstore = Chroma.from_documents(documents=all_splits, embedding=GPT4AllEmbeddings())
 
-# This sets up a Question/Answer prompt in a chain that includes the prompt, embedding vector db, and the LLM:
 
 # rag qa prompt info: https://smith.langchain.com/hub/rlm/rag-prompt-llama
 # changing this prompt will radically change the behavior of the llm
 QA_CHAIN_PROMPT = hub.pull("rlm/rag-prompt-llama")
 
-
- 
 qa_chain = RetrievalQA.from_chain_type(
     llm,
     retriever=vectorstore.as_retriever(),
     chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
 )
 
-
-
 # Run: this prompt is the instruction:
 # multi event list Prompt: "List all performance events, include name, time, location, next performance date and any supplimental information that is provided"
 # simple primary event prompt: "List the primaray performance event information. Include name, time, location, next performance date and any supplimental information that is provided"
 
-question = "Output the primaray performance event name, date, time, location and supplimental information"
+question = "Provide a bullet list of the primaray performance event name, date, time, location and supplimental information"
 qa_chain({"query": question})
 
 
