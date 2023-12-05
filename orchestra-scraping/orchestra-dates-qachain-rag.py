@@ -21,15 +21,15 @@ from langchain.chains import RetrievalQA
 # Typically more of a chatbot conversation 
 # @see https://python.langchain.com/docs/integrations/llms/ollama
 
+
+# ISSUES
+# most pages have side bars or footer with ltos of other events and event dates which seem to confuse the LLM
+# we will need to find a way to spearate out the core page/hero content and remove peripheral content or ads 
+
 # setup:
 # ./ollama serve
 # ./ollama run llama2
 # run: python orchestra-dates-qachain-rag.py
-
-# SETUP LLM:
-n_gpu_layers = 1  # Metal set to 1 is enough.
-n_batch = 512  # Should be between 1 and n_ctx, consider the amount of RAM of your Apple Silicon Chip.
-callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 # this uses the local llm web server apis once you have it running via ollma: https://ollama.ai/
 llm = Ollama(
@@ -53,7 +53,6 @@ vectorstore = Chroma.from_documents(documents=all_splits, embedding=GPT4AllEmbed
 # rag qa prompt info: https://smith.langchain.com/hub/rlm/rag-prompt-llama
 # changing this prompt will radically change the behavior of the llm
 QA_CHAIN_PROMPT = hub.pull("rlm/rag-prompt-llama")
-
 qa_chain = RetrievalQA.from_chain_type(
     llm,
     retriever=vectorstore.as_retriever(),
@@ -63,7 +62,6 @@ qa_chain = RetrievalQA.from_chain_type(
 # Run: this prompt is the instruction:
 # multi event list Prompt: "List all performance events, include name, time, location, next performance date and any supplimental information that is provided"
 # simple primary event prompt: "List the primaray performance event information. Include name, time, location, next performance date and any supplimental information that is provided"
-
 question = "Provide a bullet list of the primaray performance event name, date, time, location and supplimental information"
 qa_chain({"query": question})
 
