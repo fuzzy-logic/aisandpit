@@ -21,15 +21,20 @@ from langchain.schema.output_parser import StrOutputParser
 from langchain.schema.runnable import RunnableLambda, RunnablePassthrough
 from langchain.vectorstores import FAISS
 
+# Example of using LLM + RAG with vector database and simple prompt chain
+# @see https://research.ibm.com/blog/retrieval-augmented-generation-RAG
 
-# @see https://python.langchain.com/docs/integrations/llms/ollama
+# @docs https://python.langchain.com/docs/integrations/llms/ollama
 # setup:
 # ./ollama serve
 # ./ollama run llama2
 # run: python orchestra-dates-rag.py
 
+# ISSUES
+# most pages have side bars or footer with ltos of other events and event dates which seem to confuse the LLM
+# we will need to find a way to spearate out the core page/hero content and remove peripheral content or ads 
 
-# Example of using RAG with vector database and simple prompt chain
+
 
 
 ### VECTORDB-IZE THE WEB DATA

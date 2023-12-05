@@ -19,7 +19,7 @@ from langchain.chains import RetrievalQA
 # Example of finding concert date/time/location in a given web page
 # using a LLM specific Q/A chain @see  https://smith.langchain.com/hub/rlm/rag-prompt-llama 
 # Typically more of a chatbot conversation 
-# @see https://python.langchain.com/docs/integrations/llms/ollama
+# @docs https://python.langchain.com/docs/integrations/llms/ollama
 
 
 # ISSUES
