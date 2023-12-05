@@ -1,5 +1,6 @@
 # aisandpit
 
+Setup and exmaples for running a local LLM to avoid expensive OpenAI API costs.
 
 ### install ollama and lamgchain
 
@@ -20,3 +21,33 @@ Langchain: https://python.langchain.com/docs/integrations/llms/ollama
 `cantus-id` experiments with fetching cantus chants from fragments of annotated gregorian chant manuscripts
 
 
+
+
+### Next steps and ideas to explore
+
+
+##### LLM + RAG 
+Curently solving the problems using LLM + RAG (https://research.ibm.com/blog/retrieval-augmented-generation-RAG) 
+
+The initial web scrape exmaples load a web page, split it up in to 1000(ish) token chucks, loads in to a vectorbase, and then 
+puts the vectodb docs in the prompt template, which in not ideal and has token length limitations. It works ok for the current problems
+but we may need to better chunk up the data and filter what goes in, there's a lot of noise.
+
+### LLM Storage
+
+We'd like to find a solution for better large document storage that does not inject them in to the prompt. 
+
+
+### Langchain
+
+Would be good to see more use of lang chain tools/modules eg: web/database/document loaders etc...
+
+ideas: 
+1. use langchain to answwer a natural language query via a sql database (have had this working) 
+2. use langchain to answwer a natural language query via multiple databases 
+3. use langchain to answer questions about data in a csv, eg: statisical questions
+4. use langchain to render graphs from data in csv file
+
+### Agents/AGI
+
+Langchain agents and Babgy AGI look really intersting, and would be good to get running with a local LLM to see how it could solve some the problems we throw at it.
