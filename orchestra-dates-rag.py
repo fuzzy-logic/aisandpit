@@ -19,24 +19,12 @@ from langchain.chains import RetrievalQA
 # setup:
 # ./ollama serve
 # ./ollama run llama2
-# run: python ollama-rag.py 
+# run: python orchestra-dates-rag.py
 
 # SETUP LLM:
 n_gpu_layers = 1  # Metal set to 1 is enough.
 n_batch = 512  # Should be between 1 and n_ctx, consider the amount of RAM of your Apple Silicon Chip.
 callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
-
-# Make sure the model path is correct for your system!
-# llm = LlamaCpp(
-#     model_path="/Users/rlm/Desktop/Code/llama.cpp/models/llama-2-13b-chat.ggufv3.q4_0.bin",
-#     n_gpu_layers=n_gpu_layers,
-#     n_batch=n_batch,
-#     n_ctx=2048,
-#     f16_kv=True,  # MUST set to True, otherwise you will run into problem after a couple of calls
-#     callback_manager=callback_manager,
-#     verbose=True,
-# )
-
 
 # this uses the local llm web server apis once you have it running via ollma: https://ollama.ai/
 llm = Ollama(
@@ -52,19 +40,16 @@ pages = ["https://www.rpo.co.uk/whats-on/eventdetail/1982/82/john-rutters-christ
 for page in pages: 
     loader = WebBaseLoader(page)
     data = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     all_splits = text_splitter.split_documents(data)
     vectorstore = Chroma.from_documents(documents=all_splits, embedding=GPT4AllEmbeddings())
 print("data sourced from following web pages: ", pages)
 
+# This sets up a Question/Answer prompt in a chain that includes the prompt, embedding vector db, and the LLM:
 
-# Prompt (this matters, not sure why, it's the initial "setup" orienting prompt)
-prompt = PromptTemplate.from_template(
-    "summarise information in the docs: {docs}"
-)
-
+# rag qa prompt info: https://smith.langchain.com/hub/rlm/rag-prompt-llama
+# changing this prompt will radically change the behavior of the llm
 QA_CHAIN_PROMPT = hub.pull("rlm/rag-prompt-llama")
-
 qa_chain = RetrievalQA.from_chain_type(
     llm,
     retriever=vectorstore.as_retriever(),
@@ -72,12 +57,9 @@ qa_chain = RetrievalQA.from_chain_type(
 )
 
 
-# Chain
-
-
 
 # Run: this prompt is the instruction:
-question = "What are the performance event details?"
+question = "Summarise primary performance event details, include name, time, location, next performance date and any supplimental information that is provided"
 qa_chain({"query": question})
 
 
