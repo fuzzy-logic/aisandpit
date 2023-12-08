@@ -11,6 +11,8 @@ Langchain: https://python.langchain.com/docs/integrations/llms/ollama
 
 ### Project Layout
 
+Each folder should be a helpful example or key business problem to solve:
+
 
 `/basic-exmaples`  simple LLM setup exmaples, start here to make sure your setup is working
 
@@ -53,14 +55,14 @@ ideas:
 
 ### Agents/AGI
 
-Langchain agents and Babgy AGI look really intersting, and would be good to get running with a local LLM to see how it could solve some the problems we throw at it.
+Langchain agents and Babgy AGI look really intersting, and would be good to get running with a local LLM to see how it could solve some of the problems we throw at it.
 
 @see `./baby-agi`
 
 
 ### Function calling 
 
-This is how some very intereing AI apps are created.
+This is how the more interesting AI apps are created.
 
 * Create chatbots that answer questions by calling external tools (e.g., like ChatGPT Plugins)
 * Convert natural language into API calls or database queries
