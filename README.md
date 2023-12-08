@@ -54,3 +54,17 @@ ideas:
 ### Agents/AGI
 
 Langchain agents and Babgy AGI look really intersting, and would be good to get running with a local LLM to see how it could solve some the problems we throw at it.
+
+@see `./baby-agi`
+
+
+### Function calling 
+
+This is how some very intereing AI apps are created.
+
+* Create chatbots that answer questions by calling external tools (e.g., like ChatGPT Plugins)
+* Convert natural language into API calls or database queries
+* Extract structured data from text
+
+@see https://github.com/rizerphe/local-llm-function-calling
+@see https://platform.openai.com/docs/guides/function-calling
